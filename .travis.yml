@@ -1,1 +1,10 @@
 language: rust
+env:
+  global:
+    - secure: cHnfc3B4sF2cRS/H6yRMnhm8qwj6BawLR/gk8oIrXlJ6/7grhJIb/N0//Hgv429RZDdWK3Kd0JsshYtFp+Xo8mWOjGv+fjKoagHDx0+PotZH/BbYNkg/UGTUTZ9spOfKPfvnlnDbWu8KtBeLY13GFx40T66mPUUPyOF8B4LTTsU=
+before_install:
+ - sudo apt-get update -qq
+ - sudo apt-get install -qq libuchardet-dev
+after_script:
+  - cargo doc && mv target/doc doc
+  - curl http://www.rust-ci.org/artifacts/put?t=$RUSTCI_TOKEN | sh

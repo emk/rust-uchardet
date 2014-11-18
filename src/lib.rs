@@ -32,13 +32,13 @@ extern {
 }
 
 /// An error occurred while trying to detect the character encoding.
-#[stable]
+#[unstable = "Needs review"]
 #[deriving(Show)]
 pub struct EncodingDetectionError {
     message: String
 }
 
-#[stable]
+#[unstable = "Needs review"]
 impl Error for EncodingDetectionError {
     fn description(&self) -> &str { "encoding detection error" }
     fn detail(&self) -> Option<String> { Some(self.message.clone()) }
@@ -46,11 +46,11 @@ impl Error for EncodingDetectionError {
 }
 
 /// Either a return value, or an encoding detection error.
-#[stable]
+#[unstable = "Needs review"]
 pub type EncodingDetectionResult<T> = Result<T, EncodingDetectionError>;
 
 /// Detects the encoding of text using the uchardet library.
-#[stable]
+#[unstable = "Needs review"]
 pub struct EncodingDetector {
     ptr: uchardet_t
 }
@@ -70,7 +70,7 @@ impl EncodingDetector {
     ///            EncodingDetector::detect(&[0x66u8, 0x72, 0x61, 0x6e, 0xe7,
     ///                                       0x61, 0x69, 0x73]).unwrap());
     /// ```
-    #[stable]
+    #[unstable = "Needs review"]
     pub fn detect(data: &[u8]) -> EncodingDetectionResult<Option<String>> {
         let mut detector = EncodingDetector::new();
         try!(detector.handle_data(data));
@@ -79,7 +79,7 @@ impl EncodingDetector {
     }
 
     /// Create a new EncodingDetector.
-    #[stable]
+    #[unstable = "Needs review"]
     pub fn new() -> EncodingDetector {
         let ptr = unsafe { uchardet_new() };
         assert!(ptr.is_not_null());
@@ -137,7 +137,7 @@ impl EncodingDetector {
     }
 }
 
-#[stable]
+#[unstable = "Needs review"]
 impl Drop for EncodingDetector {
     fn drop(&mut self) {
         unsafe { uchardet_delete(self.ptr) };

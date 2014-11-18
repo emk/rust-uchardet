@@ -39,3 +39,10 @@ sudo apt-get install libuchardet-dev
 As of right now, we do not support building a local copy of uchardet if
 none is available on the system.  But pull requests to do so are eagerly
 welcome.
+
+### License
+
+The `rust-uchardet` library is released into the public domain, as
+described in the `UNLICENSE` file.  The `uchardet` library itself is
+distributed under an MPL/GPL/LGPL license, as far as I know.
+

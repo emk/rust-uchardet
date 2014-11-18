@@ -11,25 +11,12 @@
 #![deny(missing_docs)]
 
 extern crate libc;
+extern crate "uchardet-sys" as ffi;
 
+use libc::size_t;
 use std::error::Error;
 use std::result::Result;
 use std::c_str::CString;
-use libc::{c_char, c_int, c_void, size_t};
-
-#[allow(non_camel_case_types)]
-type uchardet_t = *mut c_void;
-
-#[link(name = "uchardet")]
-extern {
-    fn uchardet_new() -> uchardet_t;
-    fn uchardet_delete(ud: uchardet_t);
-    fn uchardet_handle_data(ud: uchardet_t, data: *const c_char, len: size_t) ->
-        c_int;
-    fn uchardet_data_end(ud: uchardet_t);
-    fn uchardet_reset(ud: uchardet_t);
-    fn uchardet_get_charset(ud: uchardet_t) -> *const c_char;
-}
 
 /// An error occurred while trying to detect the character encoding.
 #[unstable = "Needs review"]
@@ -52,7 +39,7 @@ pub type EncodingDetectionResult<T> = Result<T, EncodingDetectionError>;
 /// Detects the encoding of text using the uchardet library.
 #[unstable = "Needs review"]
 pub struct EncodingDetector {
-    ptr: uchardet_t
+    ptr: ffi::uchardet_t
 }
 
 impl EncodingDetector {
@@ -81,7 +68,7 @@ impl EncodingDetector {
     /// Create a new EncodingDetector.
     #[unstable = "Needs review"]
     pub fn new() -> EncodingDetector {
-        let ptr = unsafe { uchardet_new() };
+        let ptr = unsafe { ffi::uchardet_new() };
         assert!(ptr.is_not_null());
         EncodingDetector{ptr: ptr}
     }
@@ -91,8 +78,8 @@ impl EncodingDetector {
     #[unstable = "The underlying API is poorly documented."]
     pub fn handle_data(&mut self, data: &[u8]) -> EncodingDetectionResult<()> {
         let result = unsafe {
-            uchardet_handle_data(self.ptr, data.as_ptr() as *const i8,
-                                 data.len() as size_t)
+            ffi::uchardet_handle_data(self.ptr, data.as_ptr() as *const i8,
+                                      data.len() as size_t)
         };
         match result {
             0 => Ok(()),
@@ -110,13 +97,13 @@ impl EncodingDetector {
     /// call `handle_data` after calling this, but I'm not certain.
     #[unstable = "The underlying API is poorly documented."]
     pub fn data_end(&mut self) {
-        unsafe { uchardet_data_end(self.ptr); }
+        unsafe { ffi::uchardet_data_end(self.ptr); }
     }
 
     /// Reset the detector's internal state.
     #[unstable = "The underlying API is poorly documented."]
     pub fn reset(&mut self) {
-        unsafe { uchardet_reset(self.ptr); }
+        unsafe { ffi::uchardet_reset(self.ptr); }
     }
 
     /// Get the decoder's current best guess as to the encoding.  Returns
@@ -124,7 +111,7 @@ impl EncodingDetector {
     #[unstable = "The underlying API is poorly documented."]
     pub fn charset(&self) -> Option<String> {
         unsafe {
-            let internal_str = uchardet_get_charset(self.ptr);
+            let internal_str = ffi::uchardet_get_charset(self.ptr);
             assert!(internal_str.is_not_null());
             let c_str = CString::new(internal_str, false);
             match c_str.as_str() {
@@ -140,6 +127,6 @@ impl EncodingDetector {
 #[unstable = "Needs review"]
 impl Drop for EncodingDetector {
     fn drop(&mut self) {
-        unsafe { uchardet_delete(self.ptr) };
+        unsafe { ffi::uchardet_delete(self.ptr) };
     }
 }

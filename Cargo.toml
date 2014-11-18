@@ -3,3 +3,7 @@
 name = "uchardet"
 version = "0.0.1"
 authors = ["Eric Kidd <git@randomhacks.net>"]
+
+[dependencies.uchardet-sys]
+version = "*"
+path = "uchardet-sys"

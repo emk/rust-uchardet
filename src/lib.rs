@@ -34,6 +34,7 @@ pub struct EncodingDetectionError {
     message: String
 }
 
+#[stable]
 impl Error for EncodingDetectionError {
     fn description(&self) -> &str { "encoding detection error" }
     fn detail(&self) -> Option<String> { Some(self.message.clone()) }
@@ -132,6 +133,7 @@ impl EncodingDetector {
     }
 }
 
+#[stable]
 impl Drop for EncodingDetector {
     fn drop(&mut self) {
         unsafe { uchardet_delete(self.ptr) };

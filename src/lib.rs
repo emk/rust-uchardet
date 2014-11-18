@@ -1,6 +1,10 @@
 //! A wrapper around the uchardet library.  Detects character encodings.
+//!
 //! Note that the underlying implemention is written in C and C++, and I'm
 //! not aware of any security audits which have been performed against it.
+//!
+//! For more information, see [this project on
+//! GitHub](https://github.com/emk/rust-uchardet).
 
 #![license = "Public domain (Unlicense)"]
 #![unstable]

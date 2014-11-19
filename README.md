@@ -27,22 +27,34 @@ assert_eq!(Some("UTF-8".to_string()),
 
 [apidoc]: http://www.rust-ci.org/emk/rust-uchardet/doc/uchardet/
 
-### Getting uchardet
+### Getting uchardet (usually optional)
 
-For now, you need to install `uchardet` using your system package manager.
+If you wish, you may install `uchardet` using your system package manager.
 For example, under Ubuntu, you can run:
 
 ```sh
 sudo apt-get install libuchardet-dev
 ```
 
-As of right now, we do not support building a local copy of uchardet if
-none is available on the system.  But pull requests to do so are eagerly
-welcome.
+If you skip this step, Cargo will attempt to compile `uchardet` from the
+bundled source code instead.  This will probably only work on Linux
+machines with CMake involved, but pull requests to improve this are
+welcomed eagerly.
 
 ### License
 
-The `rust-uchardet` library is released into the public domain, as
-described in the `UNLICENSE` file.  The `uchardet` library itself is
-distributed under an MPL/GPL/LGPL license, as far as I know.
+New code in the `rust-uchardet` library is released into the public domain,
+as described in the `UNLICENSE` file.  However, several pre-existing pieces
+have their own licenses:
 
+- The [`uchardet` C++ library][cxx] in `uchardet-sys/uchardet` is
+  distributed under the Mozilla Public License 1.1.
+- The file `uchardet-sys/src/build.rs` contains several short snippets of
+  code based on Alex Crichton's [git2-rs][] library, which is described as
+  being licenses "under the terms of both the MIT license and the Apache
+  License (Version 2.0), with portions covered by various BSD-like
+  licenses."  However, this file is only run at build time, not linked into
+  the resulting executable.
+
+[cxx]: https://code.google.com/p/uchardet/
+[git2-rs]: https://github.com/alexcrichton/git2-rs/

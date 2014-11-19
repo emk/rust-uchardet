@@ -8,7 +8,6 @@ use libc::{c_char, c_int, c_void, size_t};
 #[allow(non_camel_case_types)]
 pub type uchardet_t = *mut c_void;
 
-#[link(name = "uchardet")]
 extern {
     pub fn uchardet_new() -> uchardet_t;
     pub fn uchardet_delete(ud: uchardet_t);

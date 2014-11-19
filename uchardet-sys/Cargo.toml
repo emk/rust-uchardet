@@ -3,3 +3,8 @@
 name = "uchardet-sys"
 version = "0.0.1"
 authors = ["Eric Kidd <git@randomhacks.net>"]
+links = "uchardet"
+build = "src/build.rs"
+
+[build-dependencies.pkg-config]
+git = "https://github.com/alexcrichton/pkg-config-rs"

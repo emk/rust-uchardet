@@ -21,20 +21,20 @@ use std::c_str::CString;
 /// An error occurred while trying to detect the character encoding.
 #[unstable = "Needs review"]
 #[deriving(Show)]
-pub struct EncodingDetectionError {
+pub struct EncodingDetectorError {
     message: String
 }
 
 #[unstable = "Needs review"]
-impl Error for EncodingDetectionError {
-    fn description(&self) -> &str { "encoding detection error" }
+impl Error for EncodingDetectorError {
+    fn description(&self) -> &str { "encoding detector error" }
     fn detail(&self) -> Option<String> { Some(self.message.clone()) }
     fn cause(&self) -> Option<&Error> { None }
 }
 
 /// Either a return value, or an encoding detection error.
 #[unstable = "Needs review"]
-pub type EncodingDetectionResult<T> = Result<T, EncodingDetectionError>;
+pub type EncodingDetectorResult<T> = Result<T, EncodingDetectorError>;
 
 /// Detects the encoding of text using the uchardet library.
 #[unstable = "Needs review"]
@@ -58,7 +58,7 @@ impl EncodingDetector {
     ///                                       0x61, 0x69, 0x73]).unwrap());
     /// ```
     #[unstable = "Needs review"]
-    pub fn detect(data: &[u8]) -> EncodingDetectionResult<Option<String>> {
+    pub fn detect(data: &[u8]) -> EncodingDetectorResult<Option<String>> {
         let mut detector = EncodingDetector::new();
         try!(detector.handle_data(data));
         detector.data_end();
@@ -76,7 +76,7 @@ impl EncodingDetector {
     /// Pass a chunk of raw bytes to the detector.  This is a no-op if a
     /// charset has been detected.
     #[unstable = "The underlying API is poorly documented."]
-    pub fn handle_data(&mut self, data: &[u8]) -> EncodingDetectionResult<()> {
+    pub fn handle_data(&mut self, data: &[u8]) -> EncodingDetectorResult<()> {
         let result = unsafe {
             ffi::uchardet_handle_data(self.ptr, data.as_ptr() as *const i8,
                                       data.len() as size_t)
@@ -85,7 +85,7 @@ impl EncodingDetector {
             0 => Ok(()),
             _ => {
                 let msg =  "Error handling data".to_string();
-                Err(EncodingDetectionError{message: msg})
+                Err(EncodingDetectorError{message: msg})
             }
         }
     }

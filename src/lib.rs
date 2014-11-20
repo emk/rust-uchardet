@@ -6,7 +6,6 @@
 //! For more information, see [this project on
 //! GitHub](https://github.com/emk/rust-uchardet).
 
-#![license = "Public domain (Unlicense)"]
 #![unstable = "Needs review"]
 #![deny(missing_docs)]
 

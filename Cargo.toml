@@ -1,8 +1,16 @@
 [package]
 
 name = "uchardet"
-version = "0.0.1"
+version = "0.0.2"
 authors = ["Eric Kidd <git@randomhacks.net>"]
 
+description = "Detect character encodings using uchardet library"
+license = "Unlicense"
+
+documentation = "http://www.rust-ci.org/emk/rust-uchardet/doc/uchardet/"
+repository = "https://github.com/emk/rust-uchardet"
+readme = "README.md"
+keywords = ["encoding", "text", "i18n"]
+
 [dependencies]
-uchardet-sys = "0.0.1"
+uchardet-sys = "= 0.0.2"

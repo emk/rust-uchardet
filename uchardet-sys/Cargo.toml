@@ -6,5 +6,5 @@ authors = ["Eric Kidd <git@randomhacks.net>"]
 links = "uchardet"
 build = "src/build.rs"
 
-[build-dependencies.pkg-config]
-git = "https://github.com/alexcrichton/pkg-config-rs"
+[build-dependencies]
+pkg-config = '0.0.1'

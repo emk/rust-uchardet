@@ -6,7 +6,7 @@
 //! For more information, see [this project on
 //! GitHub](https://github.com/emk/rust-uchardet).
 
-#![license = "Public domain (Unlicense) + Mozilla Public License 1.1"]
+#![license = "Public domain (Unlicense)"]
 #![unstable = "Needs review"]
 #![deny(missing_docs)]
 
@@ -53,6 +53,7 @@ impl EncodingDetector {
     ///            EncodingDetector::detect(&[0x66u8, 0x72, 0x61, 0x6e, 0xe7,
     ///                                       0x61, 0x69, 0x73]).unwrap());
     /// ```
+    #[experimental = "Will probably become a top-level function"]
     pub fn detect(data: &[u8]) -> EncodingDetectorResult<Option<String>> {
         let mut detector = EncodingDetector::new();
         try!(detector.handle_data(data));

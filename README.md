@@ -25,6 +25,9 @@ assert_eq!(Some("UTF-8".to_string()),
 
 [API documentation is available][apidoc].
 
+_Are you looking for a Rust wrapper for cld2 for detecting languages?  I'm
+currently working on one and hope to publish it shortly._
+
 [apidoc]: http://www.rust-ci.org/emk/rust-uchardet/doc/uchardet/
 
 ### Getting uchardet (usually optional)

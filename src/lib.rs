@@ -6,8 +6,8 @@
 //! For more information, see [this project on
 //! GitHub](https://github.com/emk/rust-uchardet).
 
-#![license = "Public domain (Unlicense)"]
-#![unstable]
+#![license = "Public domain (Unlicense) + Mozilla Public License 1.1"]
+#![unstable = "Needs review"]
 #![deny(missing_docs)]
 
 extern crate libc;
@@ -19,13 +19,11 @@ use std::result::Result;
 use std::c_str::CString;
 
 /// An error occurred while trying to detect the character encoding.
-#[unstable = "Needs review"]
 #[deriving(Show)]
 pub struct EncodingDetectorError {
     message: String
 }
 
-#[unstable = "Needs review"]
 impl Error for EncodingDetectorError {
     fn description(&self) -> &str { "encoding detector error" }
     fn detail(&self) -> Option<String> { Some(self.message.clone()) }
@@ -33,11 +31,9 @@ impl Error for EncodingDetectorError {
 }
 
 /// Either a return value, or an encoding detection error.
-#[unstable = "Needs review"]
 pub type EncodingDetectorResult<T> = Result<T, EncodingDetectorError>;
 
 /// Detects the encoding of text using the uchardet library.
-#[unstable = "Needs review"]
 pub struct EncodingDetector {
     ptr: ffi::uchardet_t
 }
@@ -57,7 +53,6 @@ impl EncodingDetector {
     ///            EncodingDetector::detect(&[0x66u8, 0x72, 0x61, 0x6e, 0xe7,
     ///                                       0x61, 0x69, 0x73]).unwrap());
     /// ```
-    #[unstable = "Needs review"]
     pub fn detect(data: &[u8]) -> EncodingDetectorResult<Option<String>> {
         let mut detector = EncodingDetector::new();
         try!(detector.handle_data(data));
@@ -66,7 +61,6 @@ impl EncodingDetector {
     }
 
     /// Create a new EncodingDetector.
-    #[unstable = "Needs review"]
     pub fn new() -> EncodingDetector {
         let ptr = unsafe { ffi::uchardet_new() };
         assert!(ptr.is_not_null());
@@ -75,7 +69,7 @@ impl EncodingDetector {
 
     /// Pass a chunk of raw bytes to the detector.  This is a no-op if a
     /// charset has been detected.
-    #[unstable = "The underlying API is poorly documented."]
+    #[experimental = "The underlying API is poorly documented."]
     pub fn handle_data(&mut self, data: &[u8]) -> EncodingDetectorResult<()> {
         let result = unsafe {
             ffi::uchardet_handle_data(self.ptr, data.as_ptr() as *const i8,
@@ -95,20 +89,20 @@ impl EncodingDetector {
     /// no data has been passed yet, or if an encoding has been detected
     /// for certain.  From reading the code, it appears that you can safely
     /// call `handle_data` after calling this, but I'm not certain.
-    #[unstable = "The underlying API is poorly documented."]
+    #[experimental = "The underlying API is poorly documented."]
     pub fn data_end(&mut self) {
         unsafe { ffi::uchardet_data_end(self.ptr); }
     }
 
     /// Reset the detector's internal state.
-    #[unstable = "The underlying API is poorly documented."]
+    #[experimental = "The underlying API is poorly documented."]
     pub fn reset(&mut self) {
         unsafe { ffi::uchardet_reset(self.ptr); }
     }
 
     /// Get the decoder's current best guess as to the encoding.  Returns
     /// `None` on error, or if the data appears to be ASCII.
-    #[unstable = "The underlying API is poorly documented."]
+    #[experimental = "The underlying API is poorly documented."]
     pub fn charset(&self) -> Option<String> {
         unsafe {
             let internal_str = ffi::uchardet_get_charset(self.ptr);
@@ -124,7 +118,6 @@ impl EncodingDetector {
     }
 }
 
-#[unstable = "Needs review"]
 impl Drop for EncodingDetector {
     fn drop(&mut self) {
         unsafe { ffi::uchardet_delete(self.ptr) };

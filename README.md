@@ -16,7 +16,7 @@ To run it:
 ```rust
 // At the top of the file.
 extern crate uchardet;
-use uchardet::EncodingDetector;
+use uchardet::detect_encoding_name;
 
 // Inside a function.
 assert_eq!(Some("UTF-8".to_string()),

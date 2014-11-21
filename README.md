@@ -45,6 +45,23 @@ bundled source code instead.  This will probably only work on Linux
 machines with CMake involved, but pull requests to improve this are
 welcomed eagerly.
 
+### Contributing
+
+As always, pull requests are welcome!  Please keep any patches as simple as
+possible and include unit tests; that makes it much easier for me to merge
+them.
+
+In your first commit message, please include the following statement:
+
+> I dedicate any and all copyright interest in my contributions to this
+project to the public domain. I make this dedication for the benefit of the
+public at large and to the detriment of my heirs and successors. I intend
+this dedication to be an overt act of relinquishment in perpetuity of all
+present and future rights to this software under copyright law.
+
+This allows us to keep the library legally unencumbered, and free for
+everyone to use.
+
 ### License
 
 New code in the `rust-uchardet` library is released into the public domain,

@@ -25,10 +25,11 @@ assert_eq!(Some("UTF-8".to_string()),
 
 [API documentation is available][apidoc].
 
-_Are you looking for a Rust wrapper for cld2 for detecting languages?  I'm
-currently working on one and hope to publish it shortly._
+If you also would also like to detect the language used in the decoded
+text, see [rust-cld2](https://github.com/emk/rust-cld2).
 
 [apidoc]: http://www.rust-ci.org/emk/rust-uchardet/doc/uchardet/
+[cld2]: https://github.com/emk/rust-cld2
 
 ### Getting uchardet (usually optional)
 
@@ -54,7 +55,7 @@ have their own licenses:
   distributed under the Mozilla Public License 1.1.
 - The file `uchardet-sys/src/build.rs` contains several short snippets of
   code based on Alex Crichton's [git2-rs][] library, which is described as
-  being licenses "under the terms of both the MIT license and the Apache
+  being licensed "under the terms of both the MIT license and the Apache
   License (Version 2.0), with portions covered by various BSD-like
   licenses."  However, this file is only run at build time, not linked into
   the resulting executable.

@@ -1,0 +1,3 @@
+[submodule "uchardet-sys/uchardet"]
+	path = uchardet-sys/uchardet
+	url = https://github.com/BYVoid/uchardet

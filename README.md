@@ -68,8 +68,8 @@ New code in the `rust-uchardet` library is released into the public domain,
 as described in the `UNLICENSE` file.  However, several pre-existing pieces
 have their own licenses:
 
-- The [`uchardet` C++ library][cxx] in `uchardet-sys/uchardet` is
-  distributed under the Mozilla Public License 1.1.
+- The [`uchardet` C++ library][cxx] include in `uchardet-sys/uchardet` via
+  a git submodule is distributed under the Mozilla Public License 1.1.
 - The file `uchardet-sys/src/build.rs` contains several short snippets of
   code based on Alex Crichton's [git2-rs][] library, which is described as
   being licensed "under the terms of both the MIT license and the Apache

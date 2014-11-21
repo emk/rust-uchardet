@@ -20,7 +20,7 @@ use uchardet::EncodingDetector;
 
 // Inside a function.
 assert_eq!(Some("UTF-8".to_string()),
-           EncodingDetector::detect("français".as_bytes()).unwrap());
+           detect_encoding_name("français".as_bytes()).unwrap());
 ```
 
 [API documentation is available][apidoc].

@@ -1,7 +1,7 @@
 [package]
 
 name = "uchardet"
-version = "0.0.3"
+version = "0.0.4"
 authors = ["Eric Kidd <git@randomhacks.net>"]
 
 description = "Detect character encodings using uchardet library"
@@ -11,6 +11,11 @@ documentation = "http://www.rust-ci.org/emk/rust-uchardet/doc/uchardet/"
 repository = "https://github.com/emk/rust-uchardet"
 readme = "README.md"
 keywords = ["encoding", "text", "i18n"]
+
+# Make sure we don't package this in our build, which will badly confuse
+# crates.io and Cargo.  See https://github.com/rust-lang/cargo/issues/937
+# for discussion.
+exclude = ["uchardet-sys"]
 
 [dependencies]
 uchardet-sys = "~0.0.2"

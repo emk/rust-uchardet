@@ -11,7 +11,7 @@ documentation = "http://www.rust-ci.org/emk/rust-uchardet/doc/uchardet-sys/"
 repository = "https://github.com/emk/rust-uchardet"
 
 links = "uchardet"
-build = "src/build.rs"
+build = "build.rs"
 
 [build-dependencies]
 pkg-config = '~0.0.1'

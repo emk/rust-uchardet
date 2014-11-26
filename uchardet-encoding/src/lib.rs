@@ -1,9 +1,14 @@
+//! A highly experimental binding to rust-encoding.
+
 #![feature(macro_rules)] 
 #![feature(globs)]
+#![experimental]
+#![warn(missing_docs)]
 
 extern crate encoding;
 extern crate uchardet;
 
+use std::error::Error;
 use encoding::EncodingRef;
 use encoding::label::encoding_from_whatwg_label;
 
@@ -75,12 +80,67 @@ From README.md (this is different from what the code seems to suggest):
     * WINDOWS-1252
 */
 
+/// Returned when decoding a byte array fails.
+pub enum DecodingError {
+    /// We can't figure out encoding used by the input.
+    EncodingUnknown,
+    /// We can guess the encoding, but we can't decode it.  Note that
+    /// this may be caused `encoding::all::whatwg::REPLACEMENT` being used
+    /// to intercept insecure encodings.
+    NoDecoder{encoding_name: String},
+    /// The chosen decoder could not actually decode the input.
+    DecoderFailed{encoding_name: String, message: String},
+    // Other errors, the details of which are probably unimportant.
+    Unexpected{cause: Box<Error+Send>}
+}
+
+impl Error for DecodingError {
+    fn description(&self) -> &str { "decoding error" }
+
+    fn detail(&self) -> Option<String> {
+        use DecodingError::*;
+        match self {
+            &EncodingUnknown => Some("could not guess encoding".to_string()),
+            &NoDecoder{encoding_name: ref name} =>
+                Some(format!("no decoder for {}", name)),
+            &DecoderFailed{encoding_name: ref name, message: ref msg} =>
+                Some(format!("error decoding {}: {}", name, msg)),
+            &Unexpected{..} => Some("unexpected error".to_string())
+        }
+    }
+
+    fn cause(&self) -> Option<&Error> {
+        None
+        //use DecodingError::*;
+        //match self {
+        //    &Unexpected{cause: cause} => Some(&*cause),
+        //    _ => None
+        //}
+    }
+}
+
+// ```
+// let data = "français".as_bytes();
+// let encoding = detect_encoding(data).unwrap();
+// let data.decode(DecoderTrap::Strict).unwrap();
+// assert_eq!(Some("UTF-8".to_string()),
+//            detect_encoding("français".as_bytes()).unwrap());
+// ```
+//pub fn detect_encoding(data: Vec<u8>) -> Option<EncodingRef> {
+//  
+//}
+
 /// Map the output of uchardet::detect_encoding_name to an `Encoding`
-/// object.
-pub fn encoding_from_uchardet_name(name: &str) -> Option<EncodingRef> {
+/// object.  Note that this has certain complications and limitations:
+///
+/// 1. There's no mapping for `UTF-16` because because uchardet uses
+///    that value for both UTF-16LE and UTF-16BE encodings.
+/// 2. The uchardet library represents "ASCII or unknown" using the
+///    empty string.  We map this to `None`.
+/// 3. Any legacy encoding which would map to the `Replacement` encoding
+///    will return `None`.
+fn encoding_from_uchardet_name(name: &str) -> Option<EncodingRef> {
     match name {
-        // uchardet uses this for both UTF-16LE and UTF-16LE, so we
-        // can't return an unambiguous and correct answer here.
         "UTF-16" => None,
         _ => {
             let encoding =  encoding_from_whatwg_label(name);
@@ -96,43 +156,41 @@ pub fn encoding_from_uchardet_name(name: &str) -> Option<EncodingRef> {
     }
 }
 
-#[cfg(test)]
-mod test {
+macro_rules! assert_encoding_for_name {
+    ($encoding:expr, $name:expr) => ({
+        let expected = $encoding;
+        let actual =
+            encoding_from_uchardet_name($name).expect("Expected an encoding");
+        assert_eq!(expected.name(), actual.name());
+    })
+}
+
+#[test]
+fn test_encoding_from_uchardet_name() {
     use encoding::types::Encoding;
     use encoding::all::*;
-    use self::super::*;
 
-    macro_rules! assert_encoding_for_name {
-        ($encoding:expr, $name:expr) => ({
-            let expected = $encoding;
-            let actual = encoding_from_uchardet_name($name);
-            assert!(actual.is_some());
-            assert_eq!(expected.name(), actual.unwrap().name());
-        })
-    }
-
-    #[test]
-    fn test_encoding_from_uchardet_name() {
-        assert_encoding_for_name!(BIG5_2003, "Big5");
-        assert_encoding_for_name!(EUC_JP, "EUC-JP");
-        assert_encoding_for_name!(WINDOWS_949, "EUC-KR");
-        assert_encoding_for_name!(GB18030, "gb18030");
-        assert_encoding_for_name!(GB18030, "GB18030");
-        assert_encoding_for_name!(HZ, "HZ-GB-2312");
-        assert_encoding_for_name!(ISO_2022_JP, "ISO-2022-JP");
-        // These encodings are allegedly used mostly for XXS.  See:
-        // http://www.cvedetails.com/cve/2012-0477
-        // https://encoding.spec.whatwg.org/#names-and-labels
-        // https://encoding.spec.whatwg.org/#replacement
-        assert!(encoding_from_uchardet_name("ISO-2022-CN").is_none());
-        assert!(encoding_from_uchardet_name("ISO-2022-KR").is_none());
-        assert_encoding_for_name!(ISO_8859_8, "ISO-8859-8");
-        assert_encoding_for_name!(WINDOWS_31J, "Shift_JIS");
-        assert_encoding_for_name!(UTF_8, "UTF-8");
-        // Problem: Both BE and LE map to UTF-16.
-        assert!(encoding_from_uchardet_name("UTF-16").is_none());
-        assert_encoding_for_name!(WINDOWS_1252, "windows-1252");
-        assert_encoding_for_name!(WINDOWS_1255, "windows-1255");
-        //assert_encoding_for_name!(, "x-euc-tw");
-    }
+    assert!(encoding_from_uchardet_name("").is_none());
+    assert_encoding_for_name!(BIG5_2003, "Big5");
+    assert_encoding_for_name!(EUC_JP, "EUC-JP");
+    assert_encoding_for_name!(WINDOWS_949, "EUC-KR");
+    assert_encoding_for_name!(GB18030, "gb18030");
+    assert_encoding_for_name!(GB18030, "GB18030");
+    assert_encoding_for_name!(HZ, "HZ-GB-2312");
+    assert_encoding_for_name!(ISO_2022_JP, "ISO-2022-JP");
+    // These encodings are allegedly used mostly for XXS.  See:
+    // http://www.cvedetails.com/cve/2012-0477
+    // https://encoding.spec.whatwg.org/#names-and-labels
+    // https://encoding.spec.whatwg.org/#replacement
+    assert!(encoding_from_uchardet_name("ISO-2022-CN").is_none());
+    assert!(encoding_from_uchardet_name("ISO-2022-KR").is_none());
+    assert_encoding_for_name!(ISO_8859_8, "ISO-8859-8");
+    assert_encoding_for_name!(WINDOWS_31J, "Shift_JIS");
+    assert_encoding_for_name!(UTF_8, "UTF-8");
+    // Problem: Both BE and LE map to UTF-16.
+    assert!(encoding_from_uchardet_name("UTF-16").is_none());
+    assert_encoding_for_name!(WINDOWS_1252, "windows-1252");
+    assert_encoding_for_name!(WINDOWS_1255, "windows-1255");
+    //assert_encoding_for_name!(, "x-euc-tw");
 }
+

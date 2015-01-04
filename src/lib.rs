@@ -25,7 +25,7 @@ use std::result::Result;
 use std::c_str::CString;
 
 /// An error occurred while trying to detect the character encoding.
-#[deriving(Show)]
+#[derive(Show)]
 pub struct EncodingDetectorError {
     message: String
 }
@@ -80,7 +80,7 @@ impl EncodingDetector {
     /// Create a new EncodingDetector.
     pub fn new() -> EncodingDetector {
         let ptr = unsafe { ffi::uchardet_new() };
-        assert!(ptr.is_not_null());
+        assert!(!ptr.is_null());
         EncodingDetector{ptr: ptr}
     }
 
@@ -119,7 +119,7 @@ impl EncodingDetector {
     pub fn charset(&self) -> Option<String> {
         unsafe {
             let internal_str = ffi::uchardet_get_charset(self.ptr);
-            assert!(internal_str.is_not_null());
+            assert!(!internal_str.is_null());
             let c_str = CString::new(internal_str, false);
             match c_str.as_str() {
                 None =>

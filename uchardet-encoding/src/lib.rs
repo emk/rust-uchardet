@@ -1,4 +1,8 @@
 //! A highly experimental binding to rust-encoding.
+//!
+//! Note that we do _not_ promise to always return the same output for any
+//! given input, even in stable versions of this API.  Our contract is that
+//! we try to get the right answer.
 
 #![feature(macro_rules)] 
 #![feature(globs)]
@@ -11,6 +15,7 @@ extern crate uchardet;
 use std::error::Error;
 use encoding::EncodingRef;
 use encoding::label::encoding_from_whatwg_label;
+use uchardet::detect_encoding_name;
 
 /*
 Here's a list of all the places I could find in the uchardet source which
@@ -81,6 +86,7 @@ From README.md (this is different from what the code seems to suggest):
 */
 
 /// Returned when decoding a byte array fails.
+#[allow(missing_docs)]
 pub enum DecodingError {
     /// We can't figure out encoding used by the input.
     EncodingUnknown,
@@ -110,25 +116,46 @@ impl Error for DecodingError {
     }
 
     fn cause(&self) -> Option<&Error> {
-        None
+        // See https://github.com/rust-lang/rust/issues/19279
         //use DecodingError::*;
         //match self {
         //    &Unexpected{cause: cause} => Some(&*cause),
         //    _ => None
         //}
+
+        None
     }
 }
 
-// ```
-// let data = "français".as_bytes();
-// let encoding = detect_encoding(data).unwrap();
-// let data.decode(DecoderTrap::Strict).unwrap();
-// assert_eq!(Some("UTF-8".to_string()),
-//            detect_encoding("français".as_bytes()).unwrap());
-// ```
-//pub fn detect_encoding(data: Vec<u8>) -> Option<EncodingRef> {
-//  
-//}
+/// Our standard return type.
+pub type DecodingResult<T> = Result<T, DecodingError>;
+
+/// Guess the encoding of a string and attempt to decode it.
+///
+/// ```
+/// use "uchardet-encoding"::decode;
+/// assert_eq!("français", decode("français".as_bytes()).to_string());
+/// ```
+pub fn decode(data: &[u8]) -> DecodingResult<String> {
+    let encoding = try!(detect_encoding(data));
+    match encoding.decode(data) {
+        Ok(decoded) => Ok(decoded),
+        Err(msg) => {
+            Err(DecodingError::DecoderFailed{
+                encoding_name: encoding.name(),
+                message: msg.to_owned()
+            })
+        }
+    }
+}
+
+/// Guess the encoding of a string.
+pub fn detect_encoding(data: &[u8]) -> Option<EncodingRef> {
+    match try!(detect_encoding_name(data)) {
+        None => None,
+        Some(ref name) => encoding_from_uchardet_name(name.as_slice())
+    }
+}
 
 /// Map the output of uchardet::detect_encoding_name to an `Encoding`
 /// object.  Note that this has certain complications and limitations:

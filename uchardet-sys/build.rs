@@ -4,6 +4,8 @@
 // This has been tested on Ubuntu and it assumes that CMake is available.
 // Patches are welcome to help make it work on other operating systems!
 
+#![allow(unstable)]
+
 extern crate "pkg-config" as pkg_config;
 
 use std::io;

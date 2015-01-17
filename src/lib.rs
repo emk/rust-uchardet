@@ -14,6 +14,7 @@
 //! For more information, see [this project on
 //! GitHub](https://github.com/emk/rust-uchardet).
 
+#![allow(unstable)]
 #![deny(missing_docs)]
 
 extern crate libc;
@@ -22,7 +23,8 @@ extern crate "uchardet-sys" as ffi;
 use libc::size_t;
 use std::error::Error;
 use std::result::Result;
-use std::c_str::CString;
+use std::ffi::c_str_to_bytes;
+use std::str::from_utf8;
 
 /// An error occurred while trying to detect the character encoding.
 #[derive(Show)]
@@ -120,12 +122,13 @@ impl EncodingDetector {
         unsafe {
             let internal_str = ffi::uchardet_get_charset(self.ptr);
             assert!(!internal_str.is_null());
-            let c_str = CString::new(internal_str, false);
-            match c_str.as_str() {
-                None =>
+            let bytes = c_str_to_bytes(&internal_str);
+            let charset = from_utf8(bytes);
+            match charset {
+                Err(_) =>
                     panic!("uchardet_get_charset returned invalid value"),
-                Some("") => None,
-                Some(encoding) => Some(encoding.to_string())
+                Ok("") => None,
+                Ok(encoding) => Some(encoding.to_string())
             }
         }
     }

@@ -22,6 +22,7 @@ extern crate "uchardet-sys" as ffi;
 
 use libc::size_t;
 use std::error::Error;
+use std::fmt;
 use std::result::Result;
 use std::ffi::c_str_to_bytes;
 use std::str::from_utf8;
@@ -34,8 +35,13 @@ pub struct EncodingDetectorError {
 
 impl Error for EncodingDetectorError {
     fn description(&self) -> &str { "encoding detector error" }
-    fn detail(&self) -> Option<String> { Some(self.message.clone()) }
     fn cause(&self) -> Option<&Error> { None }
+}
+
+impl fmt::Display for EncodingDetectorError {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "{}", &self.message)
+    }
 }
 
 /// Either a return value, or an encoding detection error.

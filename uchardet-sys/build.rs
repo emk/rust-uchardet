@@ -8,10 +8,9 @@
 
 extern crate "pkg-config" as pkg_config;
 
-use std::io;
-use std::io::Command;
-use std::io::fs::{mkdir,PathExtensions};
-use std::io::process::InheritFd;
+use std::old_io::{Command, USER_DIR};
+use std::old_io::fs::{mkdir, PathExtensions};
+use std::old_io::process::InheritFd;
 use std::os;
 
 fn main() {
@@ -37,7 +36,7 @@ fn main() {
     // Make a build directory.
     let build = dst.join("build");
     if !build.is_dir() {
-        mkdir(&build, io::USER_DIR).unwrap();
+        mkdir(&build, USER_DIR).unwrap();
     }
 
     // Set up our CMake command.

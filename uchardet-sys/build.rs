@@ -4,7 +4,9 @@
 // This has been tested on Ubuntu and it assumes that CMake is available.
 // Patches are welcome to help make it work on other operating systems!
 
-#![allow(unstable)]
+#![feature(io)]
+#![feature(path)]
+#![feature(os)]
 
 extern crate "pkg-config" as pkg_config;
 
@@ -26,7 +28,7 @@ fn main() {
     // Fix up our build flags.
     if target.contains("i686") {
         cxxflags.push_str(" -m32");
-    } else if target.as_slice().contains("x86_64") {
+    } else if target.contains("x86_64") {
         cxxflags.push_str(" -m64");
     }
     if !target.contains("i686") {

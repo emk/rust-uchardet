@@ -14,8 +14,12 @@
 //! For more information, see [this project on
 //! GitHub](https://github.com/emk/rust-uchardet).
 
-#![allow(unstable)]
 #![deny(missing_docs)]
+
+#![feature(std_misc)]
+#![feature(collections)]
+#![feature(core)]
+#![feature(libc)]
 
 extern crate libc;
 extern crate "uchardet-sys" as ffi;
@@ -48,7 +52,8 @@ impl fmt::Display for EncodingDetectorError {
 pub type EncodingDetectorResult<T> = Result<T, EncodingDetectorError>;
 
 /// Detects the encoding of text using the uchardet library.
-#[experimental = "This may be replaced by a better API soon."]
+///
+/// EXPERIMENTAL: This may be replaced by a better API soon.
 pub struct EncodingDetector {
     ptr: ffi::uchardet_t
 }
@@ -77,7 +82,6 @@ pub fn detect_encoding_name(data: &[u8]) ->
     Ok(detector.charset())
 }
 
-#[experimental = "This may be replaced by a better API soon."]
 impl EncodingDetector {
     /// Deprecated API for detecting encoding names.
     #[deprecated = "Use uchardet::detect_encoding_name instead"]

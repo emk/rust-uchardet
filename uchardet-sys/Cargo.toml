@@ -1,7 +1,7 @@
 [package]
 
 name = "uchardet-sys"
-version = "0.0.10"
+version = "0.0.11"
 authors = ["Eric Kidd <git@randomhacks.net>"]
 
 description = "Low-level, unsafe interface to uchardet encoding detector"

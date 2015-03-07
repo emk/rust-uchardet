@@ -17,7 +17,6 @@
 #![deny(missing_docs)]
 
 #![feature(std_misc)]
-#![feature(collections)]
 #![feature(core)]
 #![feature(libc)]
 
@@ -28,11 +27,11 @@ use libc::size_t;
 use std::error::Error;
 use std::fmt;
 use std::result::Result;
-use std::ffi::c_str_to_bytes;
+use std::ffi::CStr;
 use std::str::from_utf8;
 
 /// An error occurred while trying to detect the character encoding.
-#[derive(Show)]
+#[derive(Debug)]
 pub struct EncodingDetectorError {
     message: String
 }
@@ -132,7 +131,7 @@ impl EncodingDetector {
         unsafe {
             let internal_str = ffi::uchardet_get_charset(self.ptr);
             assert!(!internal_str.is_null());
-            let bytes = c_str_to_bytes(&internal_str);
+            let bytes = CStr::from_ptr(internal_str).to_bytes();
             let charset = from_utf8(bytes);
             match charset {
                 Err(_) =>

@@ -1,6 +1,6 @@
 [package]
 
-name = "uchardet-sys"
+name = "uchardet_sys"
 version = "0.0.11"
 authors = ["Eric Kidd <git@randomhacks.net>"]
 
@@ -12,6 +12,9 @@ repository = "https://github.com/emk/rust-uchardet"
 
 links = "uchardet"
 build = "build.rs"
+
+[dependencies]
+libc = "0.1"
 
 [build-dependencies]
 pkg-config = '*'

@@ -4,10 +4,7 @@
 // This has been tested on Ubuntu and it assumes that CMake is available.
 // Patches are welcome to help make it work on other operating systems!
 
-#![feature(path)]
-#![feature(fs)]
-
-extern crate "pkg-config" as pkg_config;
+extern crate pkg_config;
 
 use std::env;
 use std::fs::{PathExt, create_dir};
@@ -38,9 +35,10 @@ fn main() {
 
     // Make a build directory.
     let build = dst.join("build");
-    if !build.is_dir() {
-        create_dir(&build).unwrap();
-    }
+    // This isn't ideal but until is_dir() is stable just always try to create
+    // the build directory. If it exists and error is returned, which is
+    // ignored.
+    create_dir(&build);
 
     // Set up our CMake command.
     run(Command::new("cmake")
@@ -61,7 +59,7 @@ fn main() {
     let cxx_abi = "stdc++";
 
     // Print out link instructions for Cargo.
-    println!("cargo:rustc-flags=-L {} -l uchardet:static -l {}",
+    println!("cargo:rustc-flags=-L {} -l static=uchardet -l {}",
              dst.join("lib").display(), cxx_abi);
     println!("cargo:root={}", dst.display());
 }

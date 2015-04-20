@@ -16,12 +16,8 @@
 
 #![deny(missing_docs)]
 
-#![feature(std_misc)]
-#![feature(core)]
-#![feature(libc)]
-
 extern crate libc;
-extern crate "uchardet-sys" as ffi;
+extern crate uchardet_sys as ffi;
 
 use libc::size_t;
 use std::error::Error;

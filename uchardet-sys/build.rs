@@ -59,7 +59,7 @@ fn main() {
     let cxx_abi = "stdc++";
 
     // Print out link instructions for Cargo.
-    println!("cargo:rustc-flags=-L {} -l uchardet:static -l {}",
+    println!("cargo:rustc-flags=-L {} -l static=uchardet -l {}",
              dst.join("lib").display(), cxx_abi);
     println!("cargo:root={}", dst.display());
 }

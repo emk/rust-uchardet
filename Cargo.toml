@@ -12,6 +12,9 @@ repository = "https://github.com/emk/rust-uchardet"
 readme = "README.md"
 keywords = ["encoding", "text", "i18n"]
 
-[dependencies.uchardet-sys]
+[dependencies]
+libc = "0.1"
+
+[dependencies.uchardet_sys]
 path = "uchardet-sys"
 version = "*"

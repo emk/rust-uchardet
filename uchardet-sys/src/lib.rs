@@ -1,8 +1,6 @@
 //! Low-level, unsafe wrapper for the uchardet API.  Not intended to be
 //! used directly, unless you're writing your own wrapper.
 
-#![feature(libc)]
-
 extern crate libc;
 
 use libc::{c_char, c_int, c_void, size_t};

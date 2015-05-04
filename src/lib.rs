@@ -79,7 +79,7 @@ pub fn detect_encoding_name(data: &[u8]) ->
 
 impl EncodingDetector {
     /// Deprecated API for detecting encoding names.
-    #[deprecated = "Use uchardet::detect_encoding_name instead"]
+    /// Use uchardet::detect_encoding_name instead
     pub fn detect(data: &[u8]) -> EncodingDetectorResult<Option<String>> {
         detect_encoding_name(data)
     }

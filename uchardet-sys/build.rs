@@ -7,7 +7,7 @@
 extern crate pkg_config;
 
 use std::env;
-use std::fs::{PathExt, create_dir};
+use std::fs::create_dir;
 use std::path::Path;
 use std::process::{Command, Stdio};
 
@@ -38,7 +38,7 @@ fn main() {
     // This isn't ideal but until is_dir() is stable just always try to create
     // the build directory. If it exists and error is returned, which is
     // ignored.
-    create_dir(&build);
+    create_dir(&build).unwrap_or(());
 
     // Set up our CMake command.
     run(Command::new("cmake")

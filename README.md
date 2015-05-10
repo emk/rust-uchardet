@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/emk/rust-uchardet.svg?branch=master)](https://travis-ci.org/emk/rust-uchardet)
+[![Build Status](https://travis-ci.org/emk/rust-uchardet.svg?branch=master)](https://travis-ci.org/emk/rust-uchardet) [![Latest version] https://img.shields.io/crates/v/uchardet.svg](https://crates.io/crates/uchardet) [![License] https://img.shields.io/crates/l/uchardet.svg](https://crates.io/crates/uchardet)
 
 Attempts to detect the character encoding of raw text using the `uchardet`
 library.

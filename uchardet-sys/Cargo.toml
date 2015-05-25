@@ -1,20 +1,20 @@
 [package]
 
 name = "uchardet-sys"
-version = "0.0.12"
+version = "1.0.0"
 authors = ["Eric Kidd <git@randomhacks.net>"]
 
 description = "Low-level, unsafe interface to uchardet encoding detector"
 license = "Unlicense/MPL-1.1/MIT"
 
-documentation = "http://www.rust-ci.org/emk/rust-uchardet/doc/uchardet-sys/"
+documentation = "http://emk.github.io/rust-uchardet/uchardet_sys/index.html"
 repository = "https://github.com/emk/rust-uchardet"
 
 links = "uchardet"
 build = "build.rs"
 
 [dependencies]
-libc = "0.1"
+libc = "*"
 
 [build-dependencies]
 pkg-config = '*'

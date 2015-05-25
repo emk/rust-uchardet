@@ -1,20 +1,26 @@
 [package]
 
 name = "uchardet"
-version = "0.0.12"
+version = "1.0.0"
 authors = ["Eric Kidd <git@randomhacks.net>"]
 
 description = "Detect character encodings using uchardet library"
 license = "Unlicense"
 
-documentation = "http://www.rust-ci.org/emk/rust-uchardet/doc/uchardet/"
+homepage = "https://github.com/emk/rust-uchardet"
+documentation = "http://emk.github.io/rust-uchardet/uchardet/index.html"
 repository = "https://github.com/emk/rust-uchardet"
 readme = "README.md"
 keywords = ["encoding", "text", "i18n"]
 
+[features]
+# Allow access to unstable features when being built with a nightly compiler,
+# to keep travis-cargo happy and enable access to benchmarks.
+unstable = []
+
 [dependencies]
-libc = "0.1"
+libc = "*"
 
 [dependencies.uchardet-sys]
 path = "uchardet-sys"
-version = "*"
+version = "1.0.0"

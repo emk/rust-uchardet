@@ -49,7 +49,7 @@ pub type EncodingDetectorResult<T> = Result<T, EncodingDetectorError>;
 /// Detects the encoding of text using the uchardet library.
 ///
 /// EXPERIMENTAL: This may be replaced by a better API soon.
-pub struct EncodingDetector {
+struct EncodingDetector {
     ptr: ffi::uchardet_t
 }
 
@@ -79,7 +79,7 @@ pub fn detect_encoding_name(data: &[u8]) ->
 
 impl EncodingDetector {
     /// Create a new EncodingDetector.
-    pub fn new() -> EncodingDetector {
+    fn new() -> EncodingDetector {
         let ptr = unsafe { ffi::uchardet_new() };
         assert!(!ptr.is_null());
         EncodingDetector{ptr: ptr}
@@ -87,7 +87,7 @@ impl EncodingDetector {
 
     /// Pass a chunk of raw bytes to the detector.  This is a no-op if a
     /// charset has been detected.
-    pub fn handle_data(&mut self, data: &[u8]) -> EncodingDetectorResult<()> {
+    fn handle_data(&mut self, data: &[u8]) -> EncodingDetectorResult<()> {
         let result = unsafe {
             ffi::uchardet_handle_data(self.ptr, data.as_ptr() as *const i8,
                                       data.len() as size_t)
@@ -106,18 +106,18 @@ impl EncodingDetector {
     /// no data has been passed yet, or if an encoding has been detected
     /// for certain.  From reading the code, it appears that you can safely
     /// call `handle_data` after calling this, but I'm not certain.
-    pub fn data_end(&mut self) {
+    fn data_end(&mut self) {
         unsafe { ffi::uchardet_data_end(self.ptr); }
     }
 
     /// Reset the detector's internal state.
-    pub fn reset(&mut self) {
-        unsafe { ffi::uchardet_reset(self.ptr); }
-    }
+    //fn reset(&mut self) {
+    //    unsafe { ffi::uchardet_reset(self.ptr); }
+    //}
 
     /// Get the decoder's current best guess as to the encoding.  Returns
     /// `None` on error, or if the data appears to be ASCII.
-    pub fn charset(&self) -> Option<String> {
+    fn charset(&self) -> Option<String> {
         unsafe {
             let internal_str = ffi::uchardet_get_charset(self.ptr);
             assert!(!internal_str.is_null());

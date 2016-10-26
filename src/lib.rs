@@ -1,4 +1,4 @@
-//! A wrapper around the uchardet library.  Detects character encodings.
+//! A wrapper around the uchardet library. Detects character encodings.
 //!
 //! Note that the underlying implemention is written in C and C++, and I'm
 //! not aware of any security audits which have been performed against it.
@@ -6,9 +6,8 @@
 //! ```
 //! use uchardet::detect_encoding_name;
 //!
-//! assert_eq!(Some("windows-1252".to_string()),
-//!            detect_encoding_name(&[0x66u8, 0x72, 0x61, 0x6e, 0xe7,
-//!                                 0x61, 0x69, 0x73]).unwrap());
+//! assert_eq!(Some("ISO-8859-1".to_string()),
+//!            detect_encoding_name(&[0x46, 0x72, 0x61, 0x6e, 0xe7, 0x6f, 0x69, 0x73, 0xe9]).unwrap());
 //! ```
 //!
 //! For more information, see [this project on
@@ -54,19 +53,22 @@ struct EncodingDetector {
 }
 
 /// Return the name of the charset used in `data`, or `None` if the
-/// charset is ASCII or if the encoding can't be detected.  This is
+/// charset if the encoding can't be detected. This is
 /// the value returned by the underlying `uchardet` library, with
 /// the empty string mapped to `None`.
 ///
 /// ```
 /// use uchardet::detect_encoding_name;
 ///
-/// assert_eq!(None, detect_encoding_name("ascii".as_bytes()).unwrap());
+/// assert_eq!(Some("ASCII".to_string()),
+///            detect_encoding_name("ascii".as_bytes()).unwrap());
 /// assert_eq!(Some("UTF-8".to_string()),
-///            detect_encoding_name("français".as_bytes()).unwrap());
-/// assert_eq!(Some("windows-1252".to_string()),
-///            detect_encoding_name(&[0x66u8, 0x72, 0x61, 0x6e, 0xe7,
-///                                 0x61, 0x69, 0x73]).unwrap());
+///            detect_encoding_name("©français".as_bytes()).unwrap());
+/// assert_eq!(Some("ISO-8859-1".to_string()),
+///            detect_encoding_name(&[0x46, 0x72, 0x61, 0x6e, 0xe7, 0x6f, 0x69, 0x73, 0xe9]).unwrap());
+
+
+
 /// ```
 pub fn detect_encoding_name(data: &[u8]) ->
     EncodingDetectorResult<Option<String>>
@@ -85,7 +87,7 @@ impl EncodingDetector {
         EncodingDetector{ptr: ptr}
     }
 
-    /// Pass a chunk of raw bytes to the detector.  This is a no-op if a
+    /// Pass a chunk of raw bytes to the detector. This is a no-op if a
     /// charset has been detected.
     fn handle_data(&mut self, data: &[u8]) -> EncodingDetectorResult<()> {
         let result = unsafe {
@@ -102,9 +104,9 @@ impl EncodingDetector {
     }
 
     /// Notify the detector that we're done calling `handle_data`, and that
-    /// we want it to make a guess as to our encoding.  This is a no-op if
+    /// we want it to make a guess as to our encoding. This is a no-op if
     /// no data has been passed yet, or if an encoding has been detected
-    /// for certain.  From reading the code, it appears that you can safely
+    /// for certain. From reading the code, it appears that you can safely
     /// call `handle_data` after calling this, but I'm not certain.
     fn data_end(&mut self) {
         unsafe { ffi::uchardet_data_end(self.ptr); }
@@ -115,7 +117,7 @@ impl EncodingDetector {
     //    unsafe { ffi::uchardet_reset(self.ptr); }
     //}
 
-    /// Get the decoder's current best guess as to the encoding.  Returns
+    /// Get the decoder's current best guess as to the encoding. Returns
     /// `None` on error, or if the data appears to be ASCII.
     fn charset(&self) -> Option<String> {
         unsafe {

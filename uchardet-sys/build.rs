@@ -14,11 +14,18 @@ fn main() {
     if pkg_config::find_library("uchardet").is_ok() { return; }
 
     // Build uchardet ourselves
+    let mut config = Config::new("uchardet");
+
     // Mustn't build the binaries as they aren't compatible with Windows
     // and cause a compiler error
-    let dst = Config::new("uchardet")
-        .define("BUILD_BINARY", "OFF")
-        .build();
+    config.define("BUILD_BINARY", "OFF");
+
+    if cfg!(target_os = "windows") && cfg!(target_env = "gnu") {
+        // Disable sized deallocation as we're unable to link when it's enabled
+        config.cxxflag("-fno-sized-deallocation");
+    }
+
+    let dst = config.build();
 
     // Print out link instructions for Cargo.
     println!("cargo:rustc-link-search=native={}/lib", dst.display());

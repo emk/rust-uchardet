@@ -6,8 +6,8 @@
 //! ```
 //! use uchardet::detect_encoding_name;
 //!
-//! assert_eq!(Some("ISO-8859-1".to_string()),
-//!            detect_encoding_name(&[0x46, 0x72, 0x61, 0x6e, 0xe7, 0x6f, 0x69, 0x73, 0xe9]).unwrap());
+//! assert_eq!(Ok("ISO-8859-1".to_string()),
+//!            detect_encoding_name(&[0x46, 0x72, 0x61, 0x6e, 0xe7, 0x6f, 0x69, 0x73, 0xe9]));
 //! ```
 //!
 //! For more information, see [this project on
@@ -26,7 +26,7 @@ use std::ffi::CStr;
 use std::str::from_utf8;
 
 /// An error occurred while trying to detect the character encoding.
-#[derive(Debug)]
+#[derive(Debug, PartialEq)]
 pub struct EncodingDetectorError {
     message: String
 }
@@ -60,23 +60,23 @@ struct EncodingDetector {
 /// ```
 /// use uchardet::detect_encoding_name;
 ///
-/// assert_eq!(Some("ASCII".to_string()),
-///            detect_encoding_name("ascii".as_bytes()).unwrap());
-/// assert_eq!(Some("UTF-8".to_string()),
-///            detect_encoding_name("©français".as_bytes()).unwrap());
-/// assert_eq!(Some("ISO-8859-1".to_string()),
-///            detect_encoding_name(&[0x46, 0x72, 0x61, 0x6e, 0xe7, 0x6f, 0x69, 0x73, 0xe9]).unwrap());
+/// assert_eq!(Ok("ASCII".to_string()),
+///            detect_encoding_name("ascii".as_bytes()));
+/// assert_eq!(Ok("UTF-8".to_string()),
+///            detect_encoding_name("©français".as_bytes()));
+/// assert_eq!(Ok("ISO-8859-1".to_string()),
+///            detect_encoding_name(&[0x46, 0x72, 0x61, 0x6e, 0xe7, 0x6f, 0x69, 0x73, 0xe9]));
 
 
 
 /// ```
 pub fn detect_encoding_name(data: &[u8]) ->
-    EncodingDetectorResult<Option<String>>
+    EncodingDetectorResult<String>
 {
     let mut detector = EncodingDetector::new();
     try!(detector.handle_data(data));
     detector.data_end();
-    Ok(detector.charset())
+    detector.charset()
 }
 
 impl EncodingDetector {
@@ -119,7 +119,7 @@ impl EncodingDetector {
 
     /// Get the decoder's current best guess as to the encoding. Returns
     /// `None` on error, or if the data appears to be ASCII.
-    fn charset(&self) -> Option<String> {
+    fn charset(&self) -> Result<String, EncodingDetectorError> {
         unsafe {
             let internal_str = ffi::uchardet_get_charset(self.ptr);
             assert!(!internal_str.is_null());
@@ -128,8 +128,10 @@ impl EncodingDetector {
             match charset {
                 Err(_) =>
                     panic!("uchardet_get_charset returned invalid value"),
-                Ok("") => None,
-                Ok(encoding) => Some(encoding.to_string())
+                Ok("") => Err(EncodingDetectorError {
+                    message: "uchardet failed to recognize a charset".to_string()
+                }),
+                Ok(encoding) => Ok(encoding.to_string())
             }
         }
     }

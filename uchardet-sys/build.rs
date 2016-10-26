@@ -20,6 +20,7 @@ fn main() {
     let cxx_abi = "stdc++";
 
     // Print out link instructions for Cargo.
+    println!("cargo:rustc-link-search=native={}/lib", dst.display());
     println!("cargo:rustc-link-search=native={}/lib64", dst.display());
     println!("cargo:rustc-link-lib=static=uchardet");
     println!("cargo:rustc-flags=-l {}", cxx_abi);

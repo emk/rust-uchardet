@@ -6,44 +6,43 @@
 //! ```
 //! use uchardet::detect_encoding_name;
 //!
-//! assert_eq!(Ok("ISO-8859-1".to_string()),
-//!            detect_encoding_name(&[0x46, 0x72, 0x61, 0x6e, 0xe7, 0x6f, 0x69, 0x73, 0xe9]));
+//! assert_eq!("ISO-8859-1".to_string(),
+//!            detect_encoding_name(&[0x46, 0x72, 0x61, 0x6e, 0xe7, 0x6f,
+//!                0x69, 0x73, 0xe9]).unwrap());
 //! ```
 //!
 //! For more information, see [this project on
 //! GitHub](https://github.com/emk/rust-uchardet).
 
+// Increase the compiler's recursion limit for the `error_chain` crate.
+#![recursion_limit = "1024"]
 #![deny(missing_docs)]
 
+#[macro_use]
+extern crate error_chain;
 extern crate libc;
 extern crate uchardet_sys as ffi;
 
 use libc::size_t;
-use std::error::Error;
-use std::fmt;
-use std::result::Result;
 use std::ffi::CStr;
 use std::str::from_utf8;
 
-/// An error occurred while trying to detect the character encoding.
-#[derive(Debug, PartialEq)]
-pub struct EncodingDetectorError {
-    message: String
-}
+use errors::*;
 
-impl Error for EncodingDetectorError {
-    fn description(&self) -> &str { "encoding detector error" }
-    fn cause(&self) -> Option<&Error> { None }
-}
-
-impl fmt::Display for EncodingDetectorError {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "{}", &self.message)
+mod errors {
+    error_chain! {
+        errors {
+            UnrecognizableCharset {
+                description("unrecognizable charset")
+                display("uchardet was unable to recognize a charset")
+            }
+            DataHandlingError {
+                description("data handling error")
+                display("uchardet failed to handle the supplied data (out of memory?)")
+            }
+        }
     }
 }
-
-/// Either a return value, or an encoding detection error.
-pub type EncodingDetectorResult<T> = Result<T, EncodingDetectorError>;
 
 /// Detects the encoding of text using the uchardet library.
 ///
@@ -52,27 +51,21 @@ struct EncodingDetector {
     ptr: ffi::uchardet_t
 }
 
-/// Return the name of the charset used in `data`, or `None` if the
-/// charset if the encoding can't be detected. This is
-/// the value returned by the underlying `uchardet` library, with
-/// the empty string mapped to `None`.
+/// Return the name of the charset used in `data` or an error if uchardet
+/// was unable to detect a charset.
 ///
 /// ```
 /// use uchardet::detect_encoding_name;
 ///
-/// assert_eq!(Ok("ASCII".to_string()),
-///            detect_encoding_name("ascii".as_bytes()));
-/// assert_eq!(Ok("UTF-8".to_string()),
-///            detect_encoding_name("©français".as_bytes()));
-/// assert_eq!(Ok("ISO-8859-1".to_string()),
-///            detect_encoding_name(&[0x46, 0x72, 0x61, 0x6e, 0xe7, 0x6f, 0x69, 0x73, 0xe9]));
-
-
-
+/// assert_eq!("ASCII".to_string(),
+///            detect_encoding_name("ascii".as_bytes()).unwrap());
+/// assert_eq!("UTF-8".to_string(),
+///            detect_encoding_name("©français".as_bytes()).unwrap());
+/// assert_eq!("ISO-8859-1".to_string(),
+///            detect_encoding_name(&[0x46, 0x72, 0x61, 0x6e, 0xe7, 0x6f,
+///                0x69, 0x73, 0xe9]).unwrap());
 /// ```
-pub fn detect_encoding_name(data: &[u8]) ->
-    EncodingDetectorResult<String>
-{
+pub fn detect_encoding_name(data: &[u8]) -> Result<String> {
     let mut detector = EncodingDetector::new();
     try!(detector.handle_data(data));
     detector.data_end();
@@ -89,7 +82,7 @@ impl EncodingDetector {
 
     /// Pass a chunk of raw bytes to the detector. This is a no-op if a
     /// charset has been detected.
-    fn handle_data(&mut self, data: &[u8]) -> EncodingDetectorResult<()> {
+    fn handle_data(&mut self, data: &[u8]) -> Result<()> {
         let result = unsafe {
             ffi::uchardet_handle_data(self.ptr, data.as_ptr() as *const i8,
                                       data.len() as size_t)
@@ -97,8 +90,7 @@ impl EncodingDetector {
         match result {
             0 => Ok(()),
             _ => {
-                let msg =  "Error handling data".to_string();
-                Err(EncodingDetectorError{message: msg})
+                Err(ErrorKind::DataHandlingError.into())
             }
         }
     }
@@ -113,13 +105,13 @@ impl EncodingDetector {
     }
 
     /// Reset the detector's internal state.
-    //fn reset(&mut self) {
+    // fn reset(&mut self) {
     //    unsafe { ffi::uchardet_reset(self.ptr); }
-    //}
+    // }
 
-    /// Get the decoder's current best guess as to the encoding. Returns
-    /// `None` on error, or if the data appears to be ASCII.
-    fn charset(&self) -> Result<String, EncodingDetectorError> {
+    /// Get the decoder's current best guess as to the encoding. May return
+    /// an error if uchardet was unable to detect an encoding
+    fn charset(&self) -> Result<String> {
         unsafe {
             let internal_str = ffi::uchardet_get_charset(self.ptr);
             assert!(!internal_str.is_null());
@@ -128,9 +120,7 @@ impl EncodingDetector {
             match charset {
                 Err(_) =>
                     panic!("uchardet_get_charset returned invalid value"),
-                Ok("") => Err(EncodingDetectorError {
-                    message: "uchardet failed to recognize a charset".to_string()
-                }),
+                Ok("") => Err(ErrorKind::UnrecognizableCharset.into()),
                 Ok(encoding) => Ok(encoding.to_string())
             }
         }

@@ -6,9 +6,9 @@
 //! ```
 //! use uchardet::detect_encoding_name;
 //!
-//! assert_eq!("ISO-8859-1".to_string(),
-//!            detect_encoding_name(&[0x46, 0x72, 0x61, 0x6e, 0xe7, 0x6f,
-//!                0x69, 0x73, 0xe9]).unwrap());
+//! assert_eq!("WINDOWS-1252",
+//!            detect_encoding_name(&[0x46, 0x93, 0x72, 0x61, 0x6e, 0xe7, 0x6f,
+//!                0x69, 0x73, 0xe9, 0x94]).unwrap());
 //! ```
 //!
 //! For more information, see [this project on
@@ -27,8 +27,9 @@ use libc::size_t;
 use std::ffi::CStr;
 use std::str::from_utf8;
 
-use errors::*;
+pub use errors::*;
 
+#[allow(missing_docs)]
 mod errors {
     error_chain! {
         errors {
@@ -57,13 +58,13 @@ struct EncodingDetector {
 /// ```
 /// use uchardet::detect_encoding_name;
 ///
-/// assert_eq!("ASCII".to_string(),
+/// assert_eq!("ASCII",
 ///            detect_encoding_name("ascii".as_bytes()).unwrap());
-/// assert_eq!("UTF-8".to_string(),
+/// assert_eq!("UTF-8",
 ///            detect_encoding_name("©français".as_bytes()).unwrap());
-/// assert_eq!("ISO-8859-1".to_string(),
-///            detect_encoding_name(&[0x46, 0x72, 0x61, 0x6e, 0xe7, 0x6f,
-///                0x69, 0x73, 0xe9]).unwrap());
+/// assert_eq!("WINDOWS-1252",
+///            detect_encoding_name(&[0x46, 0x93, 0x72, 0x61, 0x6e, 0xe7, 0x6f,
+///                0x69, 0x73, 0xe9, 0x94]).unwrap());
 /// ```
 pub fn detect_encoding_name(data: &[u8]) -> Result<String> {
     let mut detector = EncodingDetector::new();
@@ -110,7 +111,7 @@ impl EncodingDetector {
     // }
 
     /// Get the decoder's current best guess as to the encoding. May return
-    /// an error if uchardet was unable to detect an encoding
+    /// an error if uchardet was unable to detect an encoding.
     fn charset(&self) -> Result<String> {
         unsafe {
             let internal_str = ffi::uchardet_get_charset(self.ptr);
@@ -119,7 +120,8 @@ impl EncodingDetector {
             let charset = from_utf8(bytes);
             match charset {
                 Err(_) =>
-                    panic!("uchardet_get_charset returned invalid value"),
+                    panic!("uchardet_get_charset returned a charset name \
+                            containing invalid characters"),
                 Ok("") => Err(ErrorKind::UnrecognizableCharset.into()),
                 Ok(encoding) => Ok(encoding.to_string())
             }

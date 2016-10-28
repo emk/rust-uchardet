@@ -37,11 +37,26 @@ mod errors {
                 description("unrecognizable charset")
                 display("uchardet was unable to recognize a charset")
             }
-            DataHandlingError {
-                description("data handling error")
-                display("uchardet failed to handle the supplied data (out of memory?)")
+            OutOfMemory {
+                description("out of memory error")
+                display("uchardet ran out of memory")
+            }
+            Other(int: i32) {
+                description("unknown error")
+                display("uchardet returned unknown error {}", int)
             }
         }
+    }
+
+    impl ErrorKind {
+        pub fn from_nsresult(nsresult: ::ffi::nsresult) -> ErrorKind {
+            assert!(nsresult != 0);
+            match nsresult {
+                1 => ErrorKind::OutOfMemory,
+                int => ErrorKind::Other(int),
+            }
+        }
+
     }
 }
 
@@ -84,14 +99,14 @@ impl EncodingDetector {
     /// Pass a chunk of raw bytes to the detector. This is a no-op if a
     /// charset has been detected.
     fn handle_data(&mut self, data: &[u8]) -> Result<()> {
-        let result = unsafe {
+        let nsresult = unsafe {
             ffi::uchardet_handle_data(self.ptr, data.as_ptr() as *const i8,
                                       data.len() as size_t)
         };
-        match result {
+        match nsresult {
             0 => Ok(()),
-            _ => {
-                Err(ErrorKind::DataHandlingError.into())
+            int => {
+                Err(ErrorKind::from_nsresult(int).into())
             }
         }
     }

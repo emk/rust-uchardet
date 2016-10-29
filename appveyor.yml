@@ -1,6 +1,7 @@
 environment:
   matrix:
     - RUST_HOST: "i686-pc-windows-gnu"
+      CMAKE_MAKE_PROGRAM: "mingw32-make"
     - RUST_HOST: "i686-pc-windows-msvc"
 
 install:

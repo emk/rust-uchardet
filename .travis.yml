@@ -7,7 +7,7 @@ rust:
 - "nightly"
 matrix:
   include:
-  - os: linux
+  - os: osx
     rust: stable
 before_script:
 - |

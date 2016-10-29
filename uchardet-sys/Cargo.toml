@@ -18,3 +18,4 @@ libc = "*"
 
 [build-dependencies]
 pkg-config = '*'
+cmake = "*"

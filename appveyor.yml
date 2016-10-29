@@ -5,13 +5,14 @@ environment:
 
 install:
   - ps: Start-FileDownload "https://static.rust-lang.org/rustup/dist/i686-pc-windows-gnu/rustup-init.exe"
+  - mingw-get mingw32-make
   - rustup-init.exe -y --default-host %RUST_HOST%
   - SET PATH=%PATH%;C:\Users\appveyor\.cargo\bin
-  - SET PATH=%PATH%;C:\MinGW\bin;C:\msys64\bin
+  - SET PATH=%PATH%;C:\MinGW\bin
   - rustc -V
   - cargo -V
   - cmake --version
-  - make --version
+  - mingw32-make --version
   - git submodule update --init
 
 build: false

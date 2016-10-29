@@ -29,6 +29,8 @@ use std::str::from_utf8;
 
 pub use errors::*;
 
+/// We declare our `error_chain!` in a private submodule so that we can
+/// `allow(missing_docs)`.
 #[allow(missing_docs)]
 mod errors {
     error_chain! {
@@ -47,16 +49,17 @@ mod errors {
             }
         }
     }
+}
 
-    impl ErrorKind {
-        pub fn from_nsresult(nsresult: ::ffi::nsresult) -> ErrorKind {
-            assert!(nsresult != 0);
-            match nsresult {
-                1 => ErrorKind::OutOfMemory,
-                int => ErrorKind::Other(int),
-            }
+impl ErrorKind {
+    /// Convert an `nsresult` into a Rust error.  We panic if the error
+    /// value is zero.
+    fn from_nsresult(nsresult: ::ffi::nsresult) -> ErrorKind {
+        assert!(nsresult != 0);
+        match nsresult {
+            1 => ErrorKind::OutOfMemory,
+            int => ErrorKind::Other(int),
         }
-
     }
 }
 

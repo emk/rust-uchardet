@@ -41,9 +41,8 @@ sudo apt-get install libuchardet-dev
 ```
 
 If you skip this step, Cargo will attempt to compile `uchardet` from the
-bundled source code instead.  This will probably only work on Linux
-machines with CMake involved, but pull requests to improve this are
-welcomed eagerly.
+bundled source code instead.  This should work if you have an appropriate
+`g++` or MSVC compiler installed, as well as `cmake`.
 
 ### Contributing
 

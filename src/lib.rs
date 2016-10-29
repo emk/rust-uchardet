@@ -120,11 +120,6 @@ impl EncodingDetector {
         unsafe { ffi::uchardet_data_end(self.ptr); }
     }
 
-    /// Reset the detector's internal state.
-    // fn reset(&mut self) {
-    //    unsafe { ffi::uchardet_reset(self.ptr); }
-    // }
-
     /// Get the decoder's current best guess as to the encoding. May return
     /// an error if uchardet was unable to detect an encoding.
     fn charset(&self) -> Result<String> {

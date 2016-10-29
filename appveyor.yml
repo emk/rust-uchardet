@@ -10,6 +10,8 @@ install:
   - SET PATH=%PATH%;C:\MinGW\bin
   - rustc -V
   - cargo -V
+  - cmake --version
+  - make --version
   - git submodule update --init
 
 build: false

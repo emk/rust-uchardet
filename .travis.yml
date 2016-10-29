@@ -1,9 +1,14 @@
 language: rust
 sudo: required
 rust:
-- nightly
-- beta
+- 1.10
 - stable
+- beta
+- nightly
+matrix:
+  include:
+  - os: linux
+    rust: stable
 before_script:
 - |
   pip install 'travis-cargo<0.2' --user &&
@@ -14,9 +19,3 @@ script:
   travis-cargo test &&
   travis-cargo bench &&
   travis-cargo doc
-after_success:
-- travis-cargo --only 1.0.0 doc-upload
-- travis-cargo coveralls
-env:
-  global:
-    secure: G42q+lQCXSD7jTlSLmjldXajoP45QB8mmHTLTY8DZ+E8h90Y2ib2ddeg73y/qi1xhTobewP3ka9Cu2KyeROofqyP7FwtXsdtBea2oUi7Xsmy3jyWQOgqdt7+yIaiAed9Oxkbs0syvih0uWGJlVX6uDawfAkPVG86IzRUrjE0WCM=

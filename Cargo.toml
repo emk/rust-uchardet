@@ -1,5 +1,4 @@
 [package]
-
 name = "uchardet"
 version = "1.0.0"
 authors = ["Eric Kidd <git@randomhacks.net>"]
@@ -8,7 +7,7 @@ description = "Detect character encodings using uchardet library"
 license = "Unlicense"
 
 homepage = "https://github.com/emk/rust-uchardet"
-documentation = "http://emk.github.io/rust-uchardet/uchardet/index.html"
+documentation = "http://docs.rs/uchardet"
 repository = "https://github.com/emk/rust-uchardet"
 readme = "README.md"
 keywords = ["encoding", "text", "i18n"]

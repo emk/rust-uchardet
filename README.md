@@ -70,6 +70,14 @@ present and future rights to this software under copyright law.
 This allows us to keep the library legally unencumbered, and free for
 everyone to use.
 
+Contributors include:
+
+- Boris-Chengbiao Zhou.  Support for newer upstream `uchardet` libraries
+  and Microsoft Windows, plus the error-chain conversion.
+- Wesley Moore. Fixes for Rust beta 2 and OS X.
+
+Thank you very much for your contributions!
+
 ### License
 
 New code in the `rust-uchardet` library is released into the public domain,

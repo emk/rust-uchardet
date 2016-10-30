@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/emk/rust-uchardet.svg?branch=master)](https://travis-ci.org/emk/rust-uchardet) [![Latest version](https://img.shields.io/crates/v/uchardet.svg)](https://crates.io/crates/uchardet) [![License](https://img.shields.io/crates/l/uchardet.svg)](https://crates.io/crates/uchardet)
+[![Latest version](https://img.shields.io/crates/v/uchardet.svg)](https://crates.io/crates/uchardet) [![License](https://img.shields.io/crates/l/uchardet.svg)](http://unlicense.org/) [![Build Status](https://travis-ci.org/emk/rust-uchardet.svg?branch=master)](https://travis-ci.org/emk/rust-uchardet) [![Build status](https://ci.appveyor.com/api/projects/status/5qas95gi8935jtn8?svg=true)](https://ci.appveyor.com/project/emk/rust-uchardet) [![Documentation](https://img.shields.io/badge/documentation-docs.rs-yellow.svg)](https://docs.rs/uchardet/)
 
 Attempts to detect the character encoding of raw text using the `uchardet`
 library.

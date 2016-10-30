@@ -1,8 +1,7 @@
-// Parts of this are based on the work on alexcrichton, here:
-// https://github.com/alexcrichton/git2-rs/blob/master/libgit2-sys/build.rs
-//
-// This has been tested on Ubuntu and it assumes that CMake is available.
-// Patches are welcome to help make it work on other operating systems!
+// This assumes that either uchardet dev packages are installed where
+// `pkg_config` can find them, or that CMake and supporting tools are
+// available.  Patches are welcome to help make it work on other operating
+// systems!
 
 extern crate pkg_config;
 extern crate cmake;

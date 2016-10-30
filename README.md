@@ -78,12 +78,6 @@ have their own licenses:
 
 - The [`uchardet` C++ library][cxx] include in `uchardet-sys/uchardet` via
   a git submodule is distributed under the Mozilla Public License 1.1.
-- The file `uchardet-sys/src/build.rs` contains several short snippets of
-  code based on Alex Crichton's [git2-rs][] library, which is described as
-  being licensed "under the terms of both the MIT license and the Apache
-  License (Version 2.0), with portions covered by various BSD-like
-  licenses."  However, this file is only run at build time, not linked into
-  the resulting executable.
 
 [cxx]: https://code.google.com/p/uchardet/
 [git2-rs]: https://github.com/alexcrichton/git2-rs/

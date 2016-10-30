@@ -21,6 +21,9 @@ fn main() {
     config.define("BUILD_BINARY", "OFF");
 
     if cfg!(target_os = "windows") && cfg!(target_env = "gnu") {
+        // FIXME: This is only needed on newer versions of gcc (>5 ?); Older
+        //        versions fail with "unrecognized command line option" and
+        //        abort the build; We need to somehow detect the compiler version
         // Disable sized deallocation as we're unable to link when it's enabled
         config.cxxflag("-fno-sized-deallocation");
     }

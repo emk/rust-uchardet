@@ -1,0 +1,17 @@
+[package]
+
+name = "uchardet-encoding"
+version = "0.0.1"
+authors = ["Eric Kidd <git@randomhacks.net>"]
+
+[features]
+# By default, we build uchardet support, which requires a working `cmake`
+# and C++ compiler.  This can be turned off, which will cause us to use
+# simple BOM-based detection instead.
+default = ["uchardet"]
+
+[dependencies]
+encoding_rs = "0.2.4"
+error-chain = "0.5.0"
+log = "0.3.6"
+uchardet = { version = "2.0.0-pre.1", path = "..", optional = true }

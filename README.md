@@ -3,15 +3,7 @@
 Attempts to detect the character encoding of raw text using the `uchardet`
 library.
 
-To add it to your project, add the following lines to your `Cargo.toml`
-file:
-
-```
-[dependencies.uchardet]
-git = "git://github.com/emk/rust-uchardet"
-```
-
-To run it:
+Example:
 
 ```rust
 // At the top of the file.
@@ -19,16 +11,13 @@ extern crate uchardet;
 use uchardet::detect_encoding_name;
 
 // Inside a function.
-assert_eq!(Some("UTF-8".to_string()),
+assert_eq!("UTF-8",
            detect_encoding_name("français".as_bytes()).unwrap());
 ```
-
-[API documentation is available][apidoc].
 
 If you also would also like to detect the language used in the decoded
 text, see [rust-cld2](https://github.com/emk/rust-cld2).
 
-[apidoc]: http://www.rust-ci.org/emk/rust-uchardet/doc/uchardet/
 [cld2]: https://github.com/emk/rust-cld2
 
 ### Getting uchardet (usually optional)
@@ -42,7 +31,8 @@ sudo apt-get install libuchardet-dev
 
 If you skip this step, Cargo will attempt to compile `uchardet` from the
 bundled source code instead.  This should work if you have an appropriate
-`g++` or MSVC compiler installed, as well as `cmake`.
+`g++` (or MSVC) compiler installed, as well as `cmake`.  We test this build
+on Linux, OS X and Windows (both MinGW and MSVC) using Travis CI.
 
 ### Contributing
 
@@ -51,21 +41,20 @@ possible and include unit tests; that makes it much easier for me to merge
 them.
 
 If you want to get the C/C++ code building on another platform, please see
-`uchardef-sys/build.rb`, [this build script guide][build-script], and the
-[`build.rs` file from `git2-rs`][git2].  You'll probably need to adjust
-some compiler options.  Please don't hesitate to ask questions; I'd love
-for this library to be cross platform.
+`uchardef-sys/build.rb` and [this build script guide][build-script].
+You'll probably need to adjust some compiler options.  Please don't
+hesitate to ask questions; I'd love for this library to support more
+platforms.
 
 [build-script]: http://doc.crates.io/build-script.html
-[git2]: https://github.com/alexcrichton/git2-rs/blob/master/libgit2-sys/build.rs
 
 In your first commit message, please include the following statement:
 
 > I dedicate any and all copyright interest in my contributions to this
-project to the public domain. I make this dedication for the benefit of the
-public at large and to the detriment of my heirs and successors. I intend
-this dedication to be an overt act of relinquishment in perpetuity of all
-present and future rights to this software under copyright law.
+> project to the public domain. I make this dedication for the benefit of
+> the public at large and to the detriment of my heirs and successors. I
+> intend this dedication to be an overt act of relinquishment in perpetuity
+> of all present and future rights to this software under copyright law.
 
 This allows us to keep the library legally unencumbered, and free for
 everyone to use.

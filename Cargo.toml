@@ -20,7 +20,7 @@ unstable = []
 [dependencies]
 libc = "*"
 error-chain = "0.5"
+uchardet-sys = { version = "1.0.0", path = "uchardet-sys" }
 
-[dependencies.uchardet-sys]
-path = "uchardet-sys"
-version = "1.0.0"
+[workspace]
+members = ["uchardet-sys"]

@@ -52,8 +52,8 @@ impl Accuracy {
 pub trait EncodingDetector {
     /// Detect the encoding of `data`, and return a matching
     /// `encoding_rs::Encoding` object if possible.  The `hint` value will
-    /// be used as a default unless we're not reasonably sure what
-    /// character set is used by `data.
+    /// be used as a default if we're not reasonably sure what character
+    /// set is used by `data`.
     fn detect_encoding(data: &[u8], hint: &'static Encoding)
                        -> Result<&'static Encoding>;
 
@@ -89,7 +89,7 @@ pub trait EncodingDetector {
     {
         let encoding: &Encoding = try!(Self::detect_encoding(data, hint));
         if encoding == encoding_rs::UTF_8 {
-            // Use Rust's built-in decoder, which can operate in place if
+            // Use Rust's built-in "decoder," which can operate in place if
             // we have valid UTF-8.
             let decoded: Cow<_> = String::from_utf8_lossy(data);
             // If `from_utf8_lossy` borrows the input string, it means we

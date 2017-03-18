@@ -1,6 +1,6 @@
 [package]
 name = "uchardet"
-version = "2.0.0-pre.1"
+version = "2.0.0"
 authors = ["Eric Kidd <git@randomhacks.net>"]
 
 description = "Detect character encodings using uchardet library"
@@ -19,8 +19,8 @@ unstable = []
 
 [dependencies]
 libc = "0.2.17"
-error-chain = "0.5"
-uchardet-sys = { version = "2.0.0-pre.1", path = "uchardet-sys" }
+error-chain = "0.10"
+uchardet-sys = { version = "2.0.0", path = "uchardet-sys" }
 
 [workspace]
 members = ["uchardet-sys", "encodingdet"]

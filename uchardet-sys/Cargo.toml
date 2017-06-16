@@ -13,6 +13,9 @@ repository = "https://github.com/emk/rust-uchardet"
 links = "uchardet"
 build = "build.rs"
 
+[features]
+static-link = []
+
 [dependencies]
 libc = "0.2.17"
 

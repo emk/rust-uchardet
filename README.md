@@ -12,7 +12,7 @@ use uchardet::detect_encoding_name;
 
 // Inside a function.
 assert_eq!("UTF-8",
-           detect_encoding_name("français".as_bytes()).unwrap());
+           detect_encoding_name(""©français"".as_bytes()).unwrap());
 ```
 
 If you also would also like to detect the language used in the decoded

@@ -18,6 +18,8 @@ fn main() {
     // Mustn't build the binaries as they aren't compatible with Windows
     // and cause a compiler error
     config.define("BUILD_BINARY", "OFF");
+    config.define("BUILD_STATIC", "ON");
+    config.define("BUILD_SHARED_LIBS", "OFF");
 
     if cfg!(target_os = "windows") && cfg!(target_env = "gnu") {
         // FIXME: This is only needed on newer versions of gcc (>5 ?); Older

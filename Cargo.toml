@@ -16,6 +16,7 @@ keywords = ["encoding", "text", "i18n"]
 # Allow access to unstable features when being built with a nightly compiler,
 # to keep travis-cargo happy and enable access to benchmarks.
 unstable = []
+static-link = ["uchardet-sys/static-link"]
 
 [dependencies]
 libc = "0.2.17"

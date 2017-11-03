@@ -10,7 +10,7 @@ use cmake::Config;
 
 fn main() {
     // Do nothing if this package is already provided by the system.
-    if pkg_config::find_library("uchardet").is_ok() { return; }
+    if !cfg!(feature = "static-link") && pkg_config::find_library("uchardet").is_ok() { return; }
 
     // Build uchardet ourselves
     let mut config = Config::new("uchardet");

@@ -32,8 +32,8 @@ fn main() {
         config.cxxflag("-fno-sized-deallocation");
 
         // make TLS work
-        println!("cargo:rustc-link-lib=static-nobundle=gcc_eh");
-        println!("cargo:rustc-link-lib=static-nobundle=pthread");
+        println!("cargo:rustc-link-lib=static=gcc_eh");
+        println!("cargo:rustc-link-lib=static=pthread");
 
         // unset the makeflags (jobserver currently has a bug on this system)
         env::set_var("CARGO_MAKEFLAGS", "");

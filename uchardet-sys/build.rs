@@ -59,7 +59,7 @@ fn main() {
 
     // make TLS work
     if target.contains("windows-gnu") {
-        println!("cargo:rustc-link-lib=static-nobundle=gcc_eh");
-        println!("cargo:rustc-link-lib=static-nobundle=pthread");
+        println!("cargo:rustc-link-lib=static=gcc_eh");
+        println!("cargo:rustc-link-lib=static=pthread");
     }
 }

@@ -6,9 +6,12 @@
 extern crate pkg_config;
 extern crate cmake;
 
+use std::env;
 use cmake::Config;
 
 fn main() {
+    let target = env::var("TARGET").expect("TARGET was not set");
+
     // Do nothing if this package is already provided by the system.
     if pkg_config::find_library("uchardet").is_ok() { return; }
 
@@ -18,13 +21,20 @@ fn main() {
     // Mustn't build the binaries as they aren't compatible with Windows
     // and cause a compiler error
     config.define("BUILD_BINARY", "OFF");
+    config.define("BUILD_STATIC", "ON");
+    config.define("BUILD_SHARED_LIBS", "OFF");
 
-    if cfg!(target_os = "windows") && cfg!(target_env = "gnu") {
+    if target.contains("windows-gnu") {
         // FIXME: This is only needed on newer versions of gcc (>5 ?); Older
         //        versions fail with "unrecognized command line option" and
         //        abort the build; We need to somehow detect the compiler version
         // Disable sized deallocation as we're unable to link when it's enabled
         config.cxxflag("-fno-sized-deallocation");
+    }
+
+    // unset the makeflags (jobserver currently has a bug on this system)
+    if target.contains("windows-gnu") {
+        env::set_var("CARGO_MAKEFLAGS", "");
     }
 
     let dst = config.build();
@@ -34,13 +44,18 @@ fn main() {
     println!("cargo:rustc-link-search=native={}/lib64", dst.display());
     println!("cargo:rustc-link-lib=static=uchardet");
 
-    if !(cfg!(target_os = "windows") && cfg!(target_env = "msvc")) {
-        // Not needed on windows-msvc
-
+    // Not needed on windows-msvc
+    if !target.contains("windows-msvc") {
         // Decide how to link our C++ runtime.  Feel free to submit patches
         // to make this work on your platform.  Other likely options are "c++"
         // and "c++abi" depending on OS and compiler.
         let cxx_abi = "stdc++";
         println!("cargo:rustc-flags=-l {}", cxx_abi);
+    }
+
+    // make TLS work
+    if target.contains("windows-gnu") {
+        println!("cargo:rustc-link-lib=dylib=gcc_eh");
+        println!("cargo:rustc-link-lib=dylib=pthread");
     }
 }

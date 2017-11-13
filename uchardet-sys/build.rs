@@ -32,10 +32,6 @@ fn main() {
         config.cxxflag("-fno-sized-deallocation");
     }
 
-    println!("cargo:warning=CARGO_MAKEFLAGS={:?}", env::var("CARGO_MAKEFLAGS"));
-    println!("cargo:warning=MAKEFLAGS={:?}", env::var("MAKEFLAGS"));
-    println!("cargo:warning=MFLAGS={:?}", env::var("MFLAGS"));
-
     // unset the makeflags (jobserver currently has a bug on this system)
     if target.contains("windows-gnu") {
         env::set_var("CARGO_MAKEFLAGS", "");
@@ -59,7 +55,7 @@ fn main() {
 
     // make TLS work
     if target.contains("windows-gnu") {
-        println!("cargo:rustc-link-lib=static=gcc_eh");
-        println!("cargo:rustc-link-lib=static=pthread");
+        println!("cargo:rustc-link-lib=dylib=gcc_eh");
+        println!("cargo:rustc-link-lib=dylib=pthread");
     }
 }

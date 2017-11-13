@@ -35,6 +35,10 @@ fn main() {
         println!("cargo:rustc-link-lib=static-nobundle=pthread");
     }
 
+    println!("cargo:warning=CARGO_MAKEFLAGS={:?}", env::var("CARGO_MAKEFLAGS"));
+    println!("cargo:warning=MAKEFLAGS={:?}", env::var("MAKEFLAGS"));
+    println!("cargo:warning=MFLAGS={:?}", env::var("MFLAGS"));
+
     let dst = config.build();
 
     // Print out link instructions for Cargo.

@@ -11,14 +11,6 @@ use cmake::Config;
 
 fn main() {
     let target = env::var("TARGET").expect("TARGET was not set");
-    if target.contains("windows-gnu") {
-        // make TLS work
-        println!("cargo:rustc-link-lib=static-nobundle=gcc_eh");
-        println!("cargo:rustc-link-lib=static-nobundle=pthread");
-
-        // unset the makeflags (jobserver currently has a bug on this system)
-        env::set_var("CARGO_MAKEFLAGS", "");
-    }
 
     // Do nothing if this package is already provided by the system.
     if pkg_config::find_library("uchardet").is_ok() { return; }
@@ -44,6 +36,11 @@ fn main() {
     println!("cargo:warning=MAKEFLAGS={:?}", env::var("MAKEFLAGS"));
     println!("cargo:warning=MFLAGS={:?}", env::var("MFLAGS"));
 
+    // unset the makeflags (jobserver currently has a bug on this system)
+    if target.contains("windows-gnu") {
+        env::set_var("CARGO_MAKEFLAGS", "");
+    }
+
     let dst = config.build();
 
     // Print out link instructions for Cargo.
@@ -58,5 +55,11 @@ fn main() {
         // and "c++abi" depending on OS and compiler.
         let cxx_abi = "stdc++";
         println!("cargo:rustc-flags=-l {}", cxx_abi);
+    }
+
+    // make TLS work
+    if target.contains("windows-gnu") {
+        println!("cargo:rustc-link-lib=static-nobundle=gcc_eh");
+        println!("cargo:rustc-link-lib=static-nobundle=pthread");
     }
 }

@@ -11,6 +11,14 @@ use cmake::Config;
 
 fn main() {
     let target = env::var("TARGET").expect("TARGET was not set");
+    if target.contains("windows-gnu") {
+        // make TLS work
+        println!("cargo:rustc-link-lib=static=gcc_eh");
+        println!("cargo:rustc-link-lib=static=pthread");
+
+        // unset the makeflags (jobserver currently has a bug on this system)
+        env::set_var("CARGO_MAKEFLAGS", "");
+    }
 
     // Do nothing if this package is already provided by the system.
     if pkg_config::find_library("uchardet").is_ok() { return; }
@@ -30,13 +38,6 @@ fn main() {
         //        abort the build; We need to somehow detect the compiler version
         // Disable sized deallocation as we're unable to link when it's enabled
         config.cxxflag("-fno-sized-deallocation");
-
-        // make TLS work
-        println!("cargo:rustc-link-lib=static=gcc_eh");
-        println!("cargo:rustc-link-lib=static=pthread");
-
-        // unset the makeflags (jobserver currently has a bug on this system)
-        env::set_var("CARGO_MAKEFLAGS", "");
     }
 
     println!("cargo:warning=CARGO_MAKEFLAGS={:?}", env::var("CARGO_MAKEFLAGS"));

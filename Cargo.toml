@@ -2,7 +2,6 @@
 name = "uchardet"
 version = "2.0.0"
 authors = ["Eric Kidd <git@randomhacks.net>"]
-build = "build.rs"
 
 description = "Detect character encodings using uchardet library"
 license = "Unlicense"

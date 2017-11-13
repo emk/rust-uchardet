@@ -27,6 +27,9 @@ fn main() {
         //        abort the build; We need to somehow detect the compiler version
         // Disable sized deallocation as we're unable to link when it's enabled
         config.cxxflag("-fno-sized-deallocation");
+        // make TLS work
+        println!("cargo:rustc-link-lib=static-nobundle=gcc_eh");
+        println!("cargo:rustc-link-lib=static-nobundle=pthread");
     }
 
     let dst = config.build();

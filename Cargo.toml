@@ -1,6 +1,6 @@
 [package]
 name = "uchardet"
-version = "2.0.1"
+version = "2.0.2"
 authors = ["Eric Kidd <git@randomhacks.net>"]
 
 description = "Detect character encodings using uchardet library"

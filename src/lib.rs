@@ -26,6 +26,7 @@ extern crate uchardet_sys as ffi;
 use libc::size_t;
 use std::ffi::CStr;
 use std::str::from_utf8;
+use std::os::raw::c_char;
 
 pub use errors::*;
 
@@ -103,7 +104,7 @@ impl EncodingDetector {
     /// charset has been detected.
     fn handle_data(&mut self, data: &[u8]) -> Result<()> {
         let nsresult = unsafe {
-            ffi::uchardet_handle_data(self.ptr, data.as_ptr() as *const i8,
+            ffi::uchardet_handle_data(self.ptr, data.as_ptr() as *const c_char,
                                       data.len() as size_t)
         };
         match nsresult {
